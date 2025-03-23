@@ -10,10 +10,9 @@ df = pd.read_csv('fcc-forum-pageviews.csv', index_col=0, parse_dates=True)
 # Clean data
 df = df[(df['value'] >= df['value'].quantile(0.025)) & (df['value'] <= df['value'].quantile(0.975))]
 
-
 def draw_line_plot():
     # Draw line plot
-    fig, ax = plt.subplots(figsize=(16, 9))
+    fig, ax = plt.subplots(figsize=(32, 10))
 
     ax.plot(df['value'], color='red')
 
@@ -48,10 +47,16 @@ def draw_box_plot():
     df_box['month'] = [d.strftime('%b') for d in df_box.date]
 
     # Draw box plots (using Seaborn)
-
-
-
-
+    fig, axes = plt.subplots(ncols=2, figsize=(28.8, 10.8))
+    
+    order_by_month = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    
+    sns.boxplot(data=df_box, x="year", y="value", hue="year", ax=axes[0])
+    axes[0].set(xlabel='Year', ylabel='Page Views', title='Year-wise Box Plot (Trend)')
+    axes[0].get_legend().remove()
+    
+    sns.boxplot(data=df_box, x="month", y="value", order=order_by_month, hue="month", ax=axes[1])
+    axes[1].set(xlabel='Month', ylabel='Page Views', title='Month-wise Box Plot (Seasonality)')
 
     # Save image and return fig (don't change this part)
     fig.savefig('box_plot.png')
